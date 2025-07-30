@@ -125,6 +125,7 @@ def main():
     producer = create_kafka_producer()
 
     if not producer:
+        print("Producer is None->sys.exit(1)")
         sys.exit(1) # ÇIKIŞ -> Kafka Nesnesi oluşmadı.
 
     user_pool = create_user_pool(USER_COUNT)
