@@ -149,4 +149,7 @@ def main():
         producer.flush()
         producer.close()
         LOG.info("Kafka Producer kapatıldı. Producer Scripti tamamlandı.")
+
+if __name__ == "__main__":
+    main()
     
