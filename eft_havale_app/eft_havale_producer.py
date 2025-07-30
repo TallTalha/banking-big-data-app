@@ -1,4 +1,4 @@
-# producer/eft_havale_producer.py
+# eft_havale_app/eft_havale_producer.py
 """
 JSON tipteki Transaction objelerini ilgili kafka topiine produce eden ve ana iş akışını yöneten script. 
 """
@@ -9,7 +9,7 @@ from configs.settings import KAFKA_BOOTSTRAPSERVERS
 from utils.logger import setup_logger
 
 
-LOG = setup_logger("eftHavaleProducer")
+LOG = setup_logger("eft_havale_producer")
 
 
 def create_kafka_producer() -> KafkaProducer | None:

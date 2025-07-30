@@ -9,7 +9,7 @@ from configs.settings import KAFKA_TOPIC, TRANSACTION_COUNT, USER_COUNT
 from utils.logger import setup_logger
 
 
-LOG = setup_logger("main_eftHavale")
+LOG = setup_logger("main_eft_havale_app")
 
 def main():
     """
