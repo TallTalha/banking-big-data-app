@@ -9,3 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Kafka Ortam Değişkenleri
+KAFKA_BOOTSTRAPSERVERS = os.getenv("KAFKA_BOOTSTRAPSERVERS")
+KAFKA_TOPIC = os.getenv("KAFKA_TOPIC")
+
+# Transaction Ayarları
+USER_COUNT = int(os.getenv("USER_COUNT")) #type: ignore
+TRANSACTION_COUNT = int(os.getenv("TRANSACTION_COUNT")) #type: ignore
