@@ -7,6 +7,8 @@ JSON objesi üretir.
 import random
 from faker import Faker
 import uuid
+from datetime import datetime, timezone, timedelta
+import calendar
 from utils.logger import setup_logger
 
 LOG = setup_logger("eft_havale_data_gen")
@@ -49,6 +51,33 @@ def create_user_pool(user_count: int) -> list:
     LOG.info("Müşteri havuzu oluşturuldu.")
     return pool
 
+
+def generate_random_timestamp_iso() -> str:
+    """
+    Rastgele bir ISO 8601 zaman damgası üretir.
+        Args:
+            None
+        Returns:
+            str: Rastgele üretilmiş ve %Y-%m-%dT%H:%M:%SZ formatındaki zaman damgası.
+    """
+    year = 2025
+    month = random.randint(1, 12)
+
+    # Belirtilen yıl ve ay için geçerli gün sayısını al
+    _, max_day = calendar.monthrange(year, month)
+    day = random.randint(1, max_day)
+
+    # Gün içindeki rastgele saniye
+    seconds = random.randint(0, 24 * 60 * 60 - 1)
+
+    # Başlangıç datetime nesnesi (sıfır saatli)
+    base = datetime(year, month, day, tzinfo=timezone.utc)
+
+    # O güne saniyeleri ekle
+    random_dt = base + timedelta(seconds=seconds)
+
+    return random_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+
 def generate_transactions(user_pool: list) -> dict:
     """
     Kullanıcı listesini kullanarak, ortam değiskeninde belirtilen adet kadar sahte transaction verisi üretir ve dict olarak döndürür.  
@@ -74,6 +103,7 @@ def generate_transactions(user_pool: list) -> dict:
 
     transaction = {
         "pid": str(uuid.uuid4()),
+        "timestamp":generate_random_timestamp_iso(),
         "ptype": random.choice(["E","H"]),
         "account":{
             "oid": sender["oid"],
