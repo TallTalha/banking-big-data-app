@@ -1,23 +1,16 @@
-# producer/eft-havale-producer.py
+# producer/eft_havale_data_gen.py
 """
 Bu script, iş akışındaki veritabanı verilerini simüle eder. Para transfer işleminde
 oluşabilecek verileri, standart bir formatta, eşşiz id alanları ve rastgele bilgilerle 
 JSON objesi üretir. 
 """
-import json
 import random
-import os
-import sys
-import uuid
-from time import sleep
 from faker import Faker
-from kafka import KafkaProducer
-from kafka.errors import KafkaError
-
+import uuid
 from utils.logger import setup_logger
-from configs.settings import KAFKA_BOOTSTRAPSERVERS, KAFKA_TOPIC, TRANSACTION_COUNT, USER_COUNT
 
-LOG = setup_logger("eftHavaleProducer")
+LOG = setup_logger("eftHavaleDataGen")
+
 faker = Faker("tr_TR")
 BANKS = ["İş","Garanti","Kuveyt","Şeker","Ziraat","Vakıf"]
 
@@ -97,59 +90,3 @@ def generate_transactions(user_pool: list) -> dict:
     }   #BTYPE değeri TL olmak zorunda ya da iban'ların bitim tipi olmalı 
         #ve rastgele seçim yapılırken aynı tip olması kontrol edilmeli
     return transaction
-
-def create_kafka_producer() -> KafkaProducer | None:
-    """
-    Bu fonksiyon kafka producer nesnesi oluşturur.
-        Args:
-            None
-        Returns:
-        producer(KafkaProducer): Kafka producer nesnesi.
-    """
-
-    try:
-        producer= KafkaProducer(
-            bootstrap_servers = KAFKA_BOOTSTRAPSERVERS,
-            value_serializer = lambda v: json.dumps(v).encode("utf-8")
-        )
-        LOG.info("Kafka Producer başarıyla oluşturuldu.")
-        return producer
-    except KafkaError as ke:
-        LOG.critical(f"Kafka Producer nesnesi oluşturulurken hata: {ke}", exc_info=True)
-        return None
-    
-def main():
-    """
-    Ana iş akışını düzenler.
-    """
-    producer = create_kafka_producer()
-
-    if not producer:
-        print("Producer is None->sys.exit(1)")
-        sys.exit(1) # ÇIKIŞ -> Kafka Nesnesi oluşmadı.
-
-    user_pool = create_user_pool(USER_COUNT)
-
-    LOG.info(f"{KAFKA_TOPIC} topiğine, {TRANSACTION_COUNT} adet transaction gönderiliyor.")
-    
-    try:
-        for i in range(TRANSACTION_COUNT):
-            transaction = generate_transactions(user_pool)
-            producer.send(KAFKA_TOPIC, value=transaction)
-
-            if (i+1)%500 == 0:
-                LOG.info(f"{i+1} adet veri gönderildi.")
-            
-            sleep(0.005) # 5ms bekle
-    except Exception as e:
-        LOG.error(f"Kafka Topiğine veri gönderirken hata:{e}", exc_info=True)
-
-    finally:
-        LOG.info("(flush) Tüm mesajların gönderilmesi bekleniyor.")
-        producer.flush()
-        producer.close()
-        LOG.info("Kafka Producer kapatıldı. Producer Scripti tamamlandı.")
-
-if __name__ == "__main__":
-    main()
-    
