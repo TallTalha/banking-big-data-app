@@ -1,5 +1,5 @@
 from data_transformer import transform_transactions
-from data_consumer import create_spark_session, read_from_kafka
+from data_consumer import create_spark_session, readStream_from_kafka
 from configs.settings import KAFKA_BOOTSTRAPSERVERS, KAFKA_TOPIC
 from pyspark.sql import functions as F
 
@@ -22,3 +22,34 @@ def main():
     Açıkklama:
         Real-time verilerin işlenmesinde iş akışını düzenler.
     """ 
+    spark = create_spark_session(appName="eftHavaleBatchAnalysis")
+    if not spark:
+        LOG.critical("Spark Session=None, işlem sonlandırıldı. ")
+        sys.exit(1) # ÇIKIŞ -> Spark oturumu oluşmadı.
+
+    raw_stream_df = readStream_from_kafka(
+        spark=spark, kafka_server=KAFKA_BOOTSTRAPSERVERS, kafka_topic=KAFKA_TOPIC, startingOffsets="latest" )  #type: ignore
+
+    transaction_df = transform_transactions(raw_df=raw_stream_df) #type: ignore
+
+    # Banka şirketine göre sürekli güncellenen toplam hacim
+    bank_based_volume_strream = (
+        transaction_df
+        .groupBy(F.col("info").getItem(2))
+        .agg(F.sum("amount").alias("toplam_hacim"))
+    )
+
+    query = (
+        bank_based_volume_strream
+        .writeStream
+        .outputMode("complete")
+        .format("console")
+        .option("checkpointLocation", "checkpoint/finance_stream_v1") 
+        .trigger(processingTime='10 seconds') 
+        .start()
+    )
+
+    query.awaitTermination()
+
+if __name__ == "__main__":
+    main()

@@ -60,3 +60,30 @@ def read_from_kafka(spark: SparkSession, kafka_server: str, kafka_topic: str, st
         LOG.error(f"{kafka_topic} topiğinden veriler okunurken hata: {e}", exc_info=True)
         return None
     
+def readStream_from_kafka(spark: SparkSession, kafka_server: str, kafka_topic: str, startingOffsets: str = "latest" ) -> DataFrame | None:
+    """
+    Girdi olarak verilen, Spark Oturumu, Kafka Sercer ve Kafka Topic  kullanılarak
+    topikteki veriler okunur ve DataFrame olarak döndürülür.
+        Args:
+            spark(SparkSession): Kafka Topiğini okuyacak olan spark oturum nesnesidir.
+            kafka_server(String): Consume edilmesi gereken kafka bootstrap server adresi.  
+            kafka_topic(String): Consume edilmesi gereken kafka topiğinin adıdır.
+            startingOffsets(str): (earliest|latest|<specific_partition>) Topiğin neresinden verilerin okunmaya başlaması gerektiğini belirtir. 
+        Returns:
+            DataFrame: Okunan verinin spark tarafından işlenebilmesi için DataFrame nesnesine dönüşür.
+    """
+    try:
+        LOG.info(f"{kafka_topic} topiğinden veriler okunuyor...")
+        df = (
+            spark.readStream
+            .format("kafka")
+            .option("kafka.bootstrap.servers", kafka_server)
+            .option("subscribe", kafka_topic)
+            .option("startingOffsets", startingOffsets)
+            .load()
+        )
+        LOG.info(f"{kafka_topic} topiğinden veriler başarıyla okundu.")
+        return df
+    except Exception as e:
+        LOG.error(f"{kafka_topic} topiğinden veriler okunurken hata: {e}", exc_info=True)
+        return None
