@@ -1,4 +1,4 @@
-# eft_havale_app/eft_havale_data_gen.py
+# eft_havale_app/data_generator.py
 """
 Bu script, iş akışındaki veritabanı verilerini simüle eder. Para transfer işleminde
 oluşabilecek verileri, standart bir formatta, eşşiz id alanları ve rastgele bilgilerle 
@@ -9,9 +9,9 @@ from faker import Faker
 import uuid
 from datetime import datetime, timezone, timedelta
 import calendar
-from utils.logger import setup_logger
+import logging
 
-LOG = setup_logger("eft_havale_data_gen")
+LOG = logging.getLogger("data_producer")
 
 faker = Faker("tr_TR")
 BANKS = ["İş","Garanti","Kuveyt","Şeker","Ziraat","Vakıf"]

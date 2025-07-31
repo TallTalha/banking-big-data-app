@@ -1,15 +1,21 @@
-from eft_havale_data_gen import generate_transactions, create_user_pool
-from eft_havale_producer import create_kafka_producer
+from eft_havale_app.producer.data_generator import generate_transactions, create_user_pool
+from eft_havale_app.producer.data_producer import create_kafka_producer
 
 import sys
 from time import sleep
-
+import os
 
 from configs.settings import KAFKA_TOPIC, TRANSACTION_COUNT, USER_COUNT
-from utils.logger import setup_logger
 
 
-LOG = setup_logger("main_eft_havale_app")
+current_dir = os.path.dirname(os.path.abspath(__file__)) # .../producer
+app_root_dir = os.path.dirname(current_dir)             # .../eft_havale_app
+project_root = os.path.dirname(app_root_dir)            # .../banking-big-data-app
+sys.path.append(project_root)
+
+from utils.logger import set_logger
+
+LOG = set_logger("eft_havale_producer",app_file_path=app_root_dir)
 
 def main():
     """
