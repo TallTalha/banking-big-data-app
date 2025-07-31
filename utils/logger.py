@@ -3,8 +3,7 @@
 Bu modül, uygulama genelinde kullanılacak logger'ı ayarlar.
 Logger, hem konsola hem de dosyaya loglama yapar.
 Log dosyaları, uygulamanın kök dizinindeki logs klasöründe saklanır.
-Log dosyaları, modül adıyla adlandırılır ve her modül için ayrı bir log dosyası oluşturulur.
-Loglama formatı, tarih, modül adı, log seviyesi ve mesajı içerir.
+Loglama formatı, tarih, modül adı, log seviyesi, thread ve mesajı içerir.
 Log dosyaları, 10 MB boyutuna ulaştığında yeni bir dosya oluşturur ve en fazla 5 yedek dosya tutar. 
 """
 import logging
@@ -13,23 +12,32 @@ import os
 import sys
 import re
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LOG_ROOT = os.path.join(PROJECT_ROOT,"logs")
-os.makedirs(LOG_ROOT, exist_ok=True)
+def set_logger(name: str, app_file_path: str, level: int = logging.INFO) -> logging.Logger:
+    """
+    Açıklama:
+        app_file_path dizini altında logs klasörü oluşturur. logs klasörü altında, yedekleme özelliği, konsola yazma özelliği
+        eklenmiş name.log dosyası oluşturur ve Logger nesnesi olarak döndürür. 
+            Yedekleme Özelliği:                     
+                RotatingFileHandler ile log 10 MB boyutuna ulaştığında yeni bir dosya oluşturur, en fazla 5 yedek dosya tutar.
+    Args:
+        name (str): Logger'ın adı, genellikle modül adı olarak kullanılır.
+        app_file_path (str): logs klasörünün oluşturulacağı uygulama dizini.
+        level (int): Log seviyesini belirler. Varsayılan olarak INFO seviyesidir.
+    Returns:
+        logging.Logger: Ayarlanmış logger nesnesi.
+    """
+    LOGS_ROOT = os.path.join(app_file_path,"logs") # Logların kök dizini
+    os.makedirs(app_file_path, exist_ok=True) 
 
-def setup_logger(name: str, level: int = logging.INFO) -> logging.Logger:
-    """
-    Logger'ı ayarlar ve döndürür. Her logger, log dosyasında kendi modül adıyla ayrı bir dosyaya yazılır.
-    Örneğin. main.py modülü için logs/main.log dosyasına yazılır. 10 MB boyutuna ulaştığında yeni bir dosya oluşturur,
-    en fazla 5 yedek dosya tutar
-        Args:
-            name (str): Logger'ın adı, genellikle modül adı olarak kullanılır.
-            level (int): Log seviyesini belirler. Varsayılan olarak INFO seviyesidir.
-        Returns:
-            logging.Logger: Ayarlanmış logger nesnesi.
-    """
-    safe_name = re.sub(r"[^\w\-_.]", "_", name)
-    LOG_FILE = os.path.join(LOG_ROOT,f"{safe_name}.log")
+    safe_name = re.sub(r"[^\w\-_.]", "_", name) # Dosya ad kontrolü
+    LOG_FILE = os.path.join(LOGS_ROOT,f"{name}.log")
+    
+    logger = logging.getLogger(name=safe_name)
+    logger.setLevel(level=level)
+
+    if logger.handlers: # Handler eklenmediyse ilk defa oluşacaktır.
+        return logger 
+        
     
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - [%(threadName)s] - %(message)s")
 
@@ -37,16 +45,12 @@ def setup_logger(name: str, level: int = logging.INFO) -> logging.Logger:
         LOG_FILE, maxBytes=10*1024*1024, backupCount=5
     ) 
     fileHandler.setFormatter(formatter)
+    logger.addHandler(fileHandler)
 
     consoleHandler = logging.StreamHandler(sys.stdout)
     consoleHandler.setFormatter(formatter)
+    logger.addHandler(consoleHandler)
 
-    logger = logging.getLogger(name=name)
-    logger.setLevel(level=level)
-
-    if not logger.handlers:
-        logger.addHandler(fileHandler)
-        logger.addHandler(consoleHandler)
-    
     return logger
+
 
