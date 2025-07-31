@@ -4,8 +4,6 @@ Bu modül, kafka topiğinden consume etme işlemini gerçekleştirmek için gere
 spark oturumu oluşturmak ve ilgili kafka topiğinden veri okuma fonksiyonları yer alır.  
 """
 from pyspark.sql import SparkSession, DataFrame
-from pyspark.sql import functions as F
-from pyspark.sql.types import StringType, StructField, StringType, DoubleType
 
 import logging
 
