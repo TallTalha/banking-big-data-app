@@ -8,7 +8,7 @@ from pyspark.sql.types import StringType, StructField, StringType, DoubleType, S
 
 import logging
 
-LOG = logging.getLogger("data_transformer")
+LOG = logging.getLogger(__name__)
 
 def transform_transactions(raw_df: DataFrame) -> DataFrame:
     """

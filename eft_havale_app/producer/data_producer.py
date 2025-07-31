@@ -9,7 +9,7 @@ from configs.settings import KAFKA_BOOTSTRAPSERVERS
 import logging
 
 
-LOG = logging.getLogger("data_producer")
+LOG = logging.getLogger(__name__)
 
 
 def create_kafka_producer() -> KafkaProducer | None:

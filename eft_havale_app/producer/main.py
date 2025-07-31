@@ -13,9 +13,11 @@ app_root_dir = os.path.dirname(current_dir)             # .../eft_havale_app
 project_root = os.path.dirname(app_root_dir)            # .../banking-big-data-app
 sys.path.append(project_root)
 
+import logging
 from utils.logger import set_logger
 
-LOG = set_logger("eft_havale_producer",app_file_path=app_root_dir)
+set_logger("producer_main",app_file_path=app_root_dir)
+LOG = logging.getLogger(__name__)
 
 def main():
     """

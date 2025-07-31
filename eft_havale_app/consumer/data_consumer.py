@@ -7,7 +7,7 @@ from pyspark.sql import SparkSession, DataFrame
 
 import logging
 
-LOG = logging.getLogger("data_producer")
+LOG = logging.getLogger(__name__)
 
 def create_spark_session(appName: str) -> SparkSession | None:
     """

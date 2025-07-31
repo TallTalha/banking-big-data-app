@@ -11,7 +11,7 @@ from datetime import datetime, timezone, timedelta
 import calendar
 import logging
 
-LOG = logging.getLogger("data_producer")
+LOG = logging.getLogger(__name__)
 
 faker = Faker("tr_TR")
 BANKS = ["İş","Garanti","Kuveyt","Şeker","Ziraat","Vakıf"]

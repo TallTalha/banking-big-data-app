@@ -11,9 +11,11 @@ app_root_dir = os.path.dirname(current_dir)             # .../eft_havale_app
 project_root = os.path.dirname(app_root_dir)            # .../banking-big-data-app
 sys.path.append(project_root)
 
+import logging
 from utils.logger import set_logger
 
-LOG = set_logger("eft_havale_batch_consumer",app_file_path=app_root_dir)
+set_logger("consumer_batch_analysis",app_file_path=app_root_dir)
+LOG = logging.getLogger(__name__)
 
 def main():
     """
@@ -32,7 +34,7 @@ def main():
 
     transaction_df = transform_transactions(raw_df=raw_df)
     transaction_df.cache()
-    
+
     #Lazy Evulation Dolayısyla Hata Kontrolü spark-action işleminden önce başlatıldı.
     try:
         LOG.info(f"{transaction_df.count()} adet işlem kaydı anliz edilecek...")
