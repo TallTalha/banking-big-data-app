@@ -12,7 +12,7 @@ import logging
 LOG = logging.getLogger(__name__)
 
 
-def create_kafka_producer() -> KafkaProducer | None:
+def create_kafka_producer(kafka_server: str) -> KafkaProducer | None:
     """
     Bu fonksiyon kafka producer nesnesi oluşturur.
         Args:
@@ -23,7 +23,7 @@ def create_kafka_producer() -> KafkaProducer | None:
 
     try:
         producer= KafkaProducer(
-            bootstrap_servers = KAFKA_BOOTSTRAPSERVERS,
+            bootstrap_servers = kafka_server,
             value_serializer = lambda v: json.dumps(v).encode("utf-8")
         )
         LOG.info("Kafka Producer başarıyla oluşturuldu.")

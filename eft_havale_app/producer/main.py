@@ -5,7 +5,7 @@ import sys
 from time import sleep
 import os
 
-from configs.settings import KAFKA_TOPIC, TRANSACTION_COUNT, USER_COUNT
+from configs.settings import KAFKA_TOPIC, KAFKA_BOOTSTRAPSERVERS, TRANSACTION_COUNT, USER_COUNT
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__)) # .../producer
@@ -23,7 +23,7 @@ def main():
     """
     Ana iş akışını düzenler.
     """
-    producer = create_kafka_producer()
+    producer = create_kafka_producer(KAFKA_BOOTSTRAPSERVERS) #type: ignore
 
     if not producer:
         print("Producer is None->sys.exit(1)")
