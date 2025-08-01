@@ -9,8 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Kafka Ortam Değişkenleri
-KAFKA_BOOTSTRAPSERVERS = os.getenv("KAFKA_BOOTSTRAPSERVERS")
-KAFKA_TOPIC = os.getenv("KAFKA_TOPIC")
+KAFKA_BOOTSTRAPSERVERS = str(os.getenv("KAFKA_BOOTSTRAPSERVERS"))
+KAFKA_TOPIC = str(os.getenv("KAFKA_TOPIC"))
+
+#MongoDB
+MONGO_URI = str(os.getenv("MONGO_URI")) 
 
 # Transaction Ayarları
 USER_COUNT = int(os.getenv("USER_COUNT")) #type: ignore
