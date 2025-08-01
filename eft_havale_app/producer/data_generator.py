@@ -51,7 +51,7 @@ def create_user_pool(user_count: int) -> list:
     LOG.info("Müşteri havuzu oluşturuldu.")
     return pool
 
-
+# Batch analiz için geniş aralıkta zaman damgası üretir:
 def generate_random_timestamp_iso() -> str:
     """
     Rastgele bir ISO 8601 zaman damgası üretir.
@@ -78,6 +78,10 @@ def generate_random_timestamp_iso() -> str:
 
     return random_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
 
+# real-time analiz için anlık zaman damgası üretir:
+def current_timestamp_iso():
+    return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
 def generate_transactions(user_pool: list) -> dict:
     """
     Kullanıcı listesini kullanarak, ortam değiskeninde belirtilen adet kadar sahte transaction verisi üretir ve dict olarak döndürür.  
@@ -103,7 +107,7 @@ def generate_transactions(user_pool: list) -> dict:
 
     transaction = {
         "pid": str(uuid.uuid4()),
-        "timestamp":generate_random_timestamp_iso(),
+        "timestamp":current_timestamp_iso(),
         "ptype": random.choice(["E","H"]),
         "account":{
             "oid": sender["oid"],
