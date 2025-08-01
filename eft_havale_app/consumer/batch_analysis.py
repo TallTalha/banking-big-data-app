@@ -43,7 +43,7 @@ def main():
         LOG.info("--- Analiz 1: Bankalara  Aktarılan Toplam Para Hacmi ---")
         bank_based_money_volume = (
             transaction_df
-            .groupBy(F.col("info").getItem(2))
+            .groupBy(F.col("info.bank"))
             .agg(F.sum("amount").alias("toplam_hacim"))
         )
         bank_based_money_volume.show()
@@ -54,7 +54,7 @@ def main():
             transaction_df
             .agg(
                 F.sum("amount").alias("toplam_hacim"),
-                F.sum("pid").alias("toplam_islem_sayisi")    
+                F.count("pid").alias("toplam_islem_sayisi")    
             )
         )   
         daily_volume_and_count.show()
