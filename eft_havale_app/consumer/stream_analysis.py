@@ -35,8 +35,11 @@ def main():
     # Banka şirketine göre sürekli güncellenen toplam hacim
     bank_based_volume_strream = (
         transaction_df
-        .groupBy(F.col("info").getItem(2))
-        .agg(F.sum("amount").alias("toplam_hacim"))
+        .groupBy(F.col("info.bank"))
+        .agg(
+            F.sum("amount").alias("toplam_hacim"),
+            F.count("pid").alias("toplam_islem_sayisi")    
+        )
     )
 
     query = (

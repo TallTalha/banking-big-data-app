@@ -45,19 +45,23 @@ def main():
             transaction_df
             .groupBy(F.col("info.bank"))
             .agg(F.sum("amount").alias("toplam_hacim"))
-        )
+        ).orderBy(F.desc("amount"))
         bank_based_money_volume.show()
 
         # Analiz 2: 
-        LOG.info("--- Analiz 2: Günlük İşlem Sayısı ve Hacim ---")
-        daily_volume_and_count =(
-            transaction_df
+        LOG.info("--- Analiz 2: Belirli Bir Ayın Haftalık İşlem Sayısı ve Hacim ---")
+        filtered_df = (
+            transaction_df.filter((F.year("timestamp") == 2025) & (F.month("timestamp") == 7))
+        )
+        weekly_volume_and_count =(
+            filtered_df
+            .withColumn("week", F.weekofyear("timestamp"))
             .agg(
-                F.sum("amount").alias("toplam_hacim"),
-                F.count("pid").alias("toplam_islem_sayisi")    
+                F.sum("amount").alias("haftalik_toplam_hacim"),
+                F.count("pid").alias("haftalik_islem_sayisi")    
             )
-        )   
-        daily_volume_and_count.show()
+        )
+        weekly_volume_and_count.show()
     except Exception as e:
         LOG.critical(f"Batch analizi sırasında hata:{e}", exc_info=True)
     finally:
