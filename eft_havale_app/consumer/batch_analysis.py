@@ -45,7 +45,7 @@ def main():
             transaction_df
             .groupBy(F.col("info.bank"))
             .agg(F.sum("amount").alias("toplam_hacim"))
-        ).orderBy(F.desc("amount"))
+        ).orderBy(F.desc("toplam_hacim"))
         bank_based_money_volume.show()
 
         # Analiz 2: 
