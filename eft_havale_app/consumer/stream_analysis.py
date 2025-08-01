@@ -34,7 +34,8 @@ def main():
         sys.exit(1) # ÇIKIŞ -> Spark oturumu oluşmadı.
 
     raw_stream_df = readStream_from_kafka(
-        spark=spark, kafka_server=KAFKA_BOOTSTRAPSERVERS, kafka_topic=KAFKA_TOPIC, startingOffsets="latest" )  
+        spark=spark, kafka_server=KAFKA_BOOTSTRAPSERVERS, kafka_topic=KAFKA_TOPIC, startingOffsets="latest" 
+    )  
 
     transaction_df = transform_transactions(raw_df=raw_stream_df) #type: ignore
 
@@ -49,12 +50,19 @@ def main():
     )
 
     query = (
-        bank_based_volume_strream
-        .writeStream
+        bank_based_volume_strream.writeStream
         .outputMode("complete")
-        .format("console")
-        .option("checkpointLocation", "checkpoint/finance_stream_v1") 
-        .trigger(processingTime='10 seconds') 
+        .foreachBatch( 
+            (
+                lambda batch_df, epoch_id: batch_df.write
+                .format("mongodb")
+                .mode("overwrite")
+                .option("collection","real_time_bank_volumes")
+                .save()
+            ) 
+        )
+        .option("checkpointLocation", "checkpoint/transaction_stream_v1") 
+        .trigger(processingTime='15 seconds') 
         .start()
     )
 
