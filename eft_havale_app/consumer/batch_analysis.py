@@ -4,8 +4,8 @@ Bu script, batch analizleri için iş akışını yönetir ve analiz sonuçları
     -   Bankalara  Aktarılan Toplam Para Hacmi
     -   Belirli Bir Ayın Haftalık İşlem Sayıları ve Hacimleri
 """
-from data_transformer import transform_transactions
-from data_consumer import create_spark_session, read_from_kafka
+from data_transformer import transform_transactions, get_last_week
+from data_consumer import create_spark_session, read_from_kafka, write_batch_to_mongo
 from configs.settings import KAFKA_BOOTSTRAPSERVERS, KAFKA_TOPIC, MONGO_URI
 from pyspark.sql import functions as F
 
@@ -53,21 +53,31 @@ def main():
             .agg(F.sum("amount").alias("toplam_hacim"))
         ).orderBy(F.desc("toplam_hacim"))
         bank_based_money_volume.show()
+        write_batch_to_mongo(bank_based_money_volume,collection="bank_based_stats_2025")
 
         # Analiz 2: 
-        LOG.info("--- Analiz 2: Belirli Bir Ayın Haftalık İşlem Sayıları ve Hacimleri ---")
-        filtered_df = (
-            transaction_df.filter((F.year("timestamp") == 2025) & (F.month("timestamp") == 7))
-        )
-        weekly_volume_and_count =(
-            filtered_df
-            .withColumn("week", F.weekofyear("timestamp"))
-            .agg(
-                F.sum("amount").alias("haftalik_toplam_hacim"),
-                F.count("pid").alias("haftalik_islem_sayisi")    
+        LOG.info("--- Analiz 2: Bir Önceki Haftanın İşlem Sayıları ve Hacimleri ---")
+        
+        start_of_last_week, end_of_last_week =  get_last_week()
+
+        last_week_df = (
+            transaction_df
+            .withColumn("ts_date", F.to_date("timestamp"))
+            .filter(
+                (F.col("ts_date") >= F.lit(str(start_of_last_week))) &
+                (F.col("ts_date") <= F.lit(str(end_of_last_week)))
             )
         )
-        weekly_volume_and_count.show()
+        last_week_stats = (
+            last_week_df
+            .agg(
+                F.sum("amount").alias("gecen_hafta_toplam_hacim"),
+                F.count("pid").alias("gecen_hafta_islem_sayisi")
+            )
+        )
+        last_week_stats.show()
+        write_batch_to_mongo(last_week_stats, collection="last_week_stats")
+        
     except Exception as e:
         LOG.critical(f"Batch analizi sırasında hata:{e}", exc_info=True)
     finally:
