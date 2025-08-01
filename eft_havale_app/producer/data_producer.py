@@ -14,10 +14,11 @@ LOG = logging.getLogger(__name__)
 
 def create_kafka_producer(kafka_server: str) -> KafkaProducer | None:
     """
-    Bu fonksiyon kafka producer nesnesi oluşturur.
-        Args:
-            None
-        Returns:
+    Açıklama:
+        Bu fonksiyon kafka producer nesnesi oluşturur.
+    Args:
+        kafka_server(str): Verilerin produce edileceği Kafka'nın bootstrapserver adresi.
+    Returns:
         producer(KafkaProducer): Kafka producer nesnesi.
     """
 

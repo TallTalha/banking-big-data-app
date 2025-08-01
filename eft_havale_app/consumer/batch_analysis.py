@@ -1,6 +1,12 @@
+# eft_havale_app/consumer/batch_analysis.py
+"""
+Bu script, batch analizleri için iş akışını yönetir ve analiz sonuçlarını MongoDB'ye yazar. Batch işlemler: 
+    -   Bankalara  Aktarılan Toplam Para Hacmi
+    -   Belirli Bir Ayın Haftalık İşlem Sayıları ve Hacimleri
+"""
 from data_transformer import transform_transactions
 from data_consumer import create_spark_session, read_from_kafka
-from configs.settings import KAFKA_BOOTSTRAPSERVERS, KAFKA_TOPIC
+from configs.settings import KAFKA_BOOTSTRAPSERVERS, KAFKA_TOPIC, MONGO_URI
 from pyspark.sql import functions as F
 
 import os
@@ -22,12 +28,12 @@ def main():
     Açıkklama:
         Batch verilerin işlenmesinde iş akışını düzenler.
     """ 
-    spark = create_spark_session(appName="eftHavaleBatchAnalysis")
+    spark = create_spark_session(appName="eftHavaleBatchAnalysis",mongo_uri=MONGO_URI) 
     if not spark:
         LOG.critical("Spark Session=None, işlem sonlandırıldı. ")
         sys.exit(1) # ÇIKIŞ -> Spark oturumu oluşmadı.
 
-    raw_df = read_from_kafka(spark=spark, kafka_server=KAFKA_BOOTSTRAPSERVERS, kafka_topic=KAFKA_TOPIC) #type: ignore
+    raw_df = read_from_kafka(spark=spark, kafka_server=KAFKA_BOOTSTRAPSERVERS, kafka_topic=KAFKA_TOPIC) 
     if not raw_df:
         LOG.info("Kafka topiğinde işlenecek veri bulunamadı. İşlem sonlandırıldı.")
         sys.exit(1) # ÇIKIŞ -> İşlenecek veri yok.
@@ -49,7 +55,7 @@ def main():
         bank_based_money_volume.show()
 
         # Analiz 2: 
-        LOG.info("--- Analiz 2: Belirli Bir Ayın Haftalık İşlem Sayısı ve Hacim ---")
+        LOG.info("--- Analiz 2: Belirli Bir Ayın Haftalık İşlem Sayıları ve Hacimleri ---")
         filtered_df = (
             transaction_df.filter((F.year("timestamp") == 2025) & (F.month("timestamp") == 7))
         )

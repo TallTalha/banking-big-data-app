@@ -1,6 +1,12 @@
+# eft_havale_app/consumer/stream_analysis.py
+"""
+Bu script, stream analizleri için iş akışını yönetir ve analiz sonuçlarını MongoDB'ye yazar. Stream işlemler: 
+    -   Banka şirketleri bazında anlık olarak güncellenen toplam hacim
+
+"""
 from data_transformer import transform_transactions
 from data_consumer import create_spark_session, readStream_from_kafka
-from configs.settings import KAFKA_BOOTSTRAPSERVERS, KAFKA_TOPIC
+from configs.settings import KAFKA_BOOTSTRAPSERVERS, KAFKA_TOPIC, MONGO_URI
 from pyspark.sql import functions as F
 
 import os
@@ -22,13 +28,13 @@ def main():
     Açıkklama:
         Real-time verilerin işlenmesinde iş akışını düzenler.
     """ 
-    spark = create_spark_session(appName="eftHavaleBatchAnalysis")
+    spark = create_spark_session(appName="eftHavaleBatchAnalysis",mongo_uri=MONGO_URI)
     if not spark:
         LOG.critical("Spark Session=None, işlem sonlandırıldı. ")
         sys.exit(1) # ÇIKIŞ -> Spark oturumu oluşmadı.
 
     raw_stream_df = readStream_from_kafka(
-        spark=spark, kafka_server=KAFKA_BOOTSTRAPSERVERS, kafka_topic=KAFKA_TOPIC, startingOffsets="latest" )  #type: ignore
+        spark=spark, kafka_server=KAFKA_BOOTSTRAPSERVERS, kafka_topic=KAFKA_TOPIC, startingOffsets="latest" )  
 
     transaction_df = transform_transactions(raw_df=raw_stream_df) #type: ignore
 

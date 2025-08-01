@@ -18,12 +18,13 @@ BANKS = ["İş","Garanti","Kuveyt","Şeker","Ziraat","Vakıf"]
 
 def create_user_pool(user_count: int) -> list:
     """
-    Belirtilen sayıda, tutarlı sahte kullanıcı profili oluşturur, her kullanıcı 2-4 arasında banka hesabına sahhiptir.
-    Sahte kullanıcı havuzu list olarak döndürülür.
-        Args:
-            user_count(int): Üretilecek kullanıcı sayısı.
-        Returns:
-            pool(list): Sahte kullanıcı verileri içeren liste.
+    Açıklama:
+        Belirtilen sayıda, tutarlı sahte kullanıcı profili oluşturur, her kullanıcı 2-4 arasında banka hesabına sahhiptir.
+        Sahte kullanıcı havuzu list olarak döndürülür.
+    Args:
+        user_count(int): Üretilecek kullanıcı sayısı.
+    Returns:
+        pool(list): Sahte kullanıcı verileri içeren liste.
     """
     LOG.info(f"{user_count} adet sahte kullanıcı oluşturuluyor...")
     
@@ -54,11 +55,12 @@ def create_user_pool(user_count: int) -> list:
 # Batch analiz için 2025 yılı için zaman damgası üretir:
 def generate_random_timestamp_iso() -> str:
     """
-    Rastgele bir ISO 8601 zaman damgası üretir.
-        Args:
-            None
-        Returns:
-            str: Rastgele üretilmiş ve %Y-%m-%dT%H:%M:%SZ formatındaki zaman damgası.
+    Açıklama:
+        Rastgele bir ISO 8601 zaman damgası üretir.
+    Args:
+        None
+    Returns:
+        str: Rastgele üretilmiş ve %Y-%m-%dT%H:%M:%SZ formatındaki zaman damgası.
     """
     year = 2025
     month = random.randint(1, 12)
@@ -84,11 +86,12 @@ def current_timestamp_iso():
 
 def generate_transactions(user_pool: list) -> dict:
     """
-    Kullanıcı listesini kullanarak, ortam değiskeninde belirtilen adet kadar sahte transaction verisi üretir ve dict olarak döndürür.  
-        Args:
-            user_pool(list): oid,name,iban değerlerine sahip sözlükleri içeren kullanıcı listesi. 
-        Returns:
-            transactions(dict): pid,ptype,account(oid,name,iban),info(name,iban,bank),balance,btype değerlerini içeren transaction sözlük yapısını döndürür.
+    Açıklama:
+        Kullanıcı listesini kullanarak, ortam değiskeninde belirtilen adet kadar sahte transaction verisi üretir ve dict olarak döndürür.  
+    Args:
+        user_pool(list): oid,name,iban değerlerine sahip sözlükleri içeren kullanıcı listesi. 
+    Returns:
+        transactions(dict): pid,ptype,account(oid,name,iban),info(name,iban,bank),balance,btype değerlerini içeren transaction sözlük yapısını döndürür.
     """
     sender = random.choice(user_pool)
     sender_bank_acc = random.choice(sender["bank_accounts"])
