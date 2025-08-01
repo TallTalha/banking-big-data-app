@@ -51,7 +51,7 @@ def create_user_pool(user_count: int) -> list:
     LOG.info("Müşteri havuzu oluşturuldu.")
     return pool
 
-# Batch analiz için geniş aralıkta zaman damgası üretir:
+# Batch analiz için 2024 yılı için zaman damgası üretir:
 def generate_random_timestamp_iso() -> str:
     """
     Rastgele bir ISO 8601 zaman damgası üretir.
@@ -60,7 +60,7 @@ def generate_random_timestamp_iso() -> str:
         Returns:
             str: Rastgele üretilmiş ve %Y-%m-%dT%H:%M:%SZ formatındaki zaman damgası.
     """
-    year = 2025
+    year = 2024
     month = random.randint(1, 12)
 
     # Belirtilen yıl ve ay için geçerli gün sayısını al
@@ -107,7 +107,7 @@ def generate_transactions(user_pool: list) -> dict:
 
     transaction = {
         "pid": str(uuid.uuid4()),
-        "timestamp":current_timestamp_iso(),
+        "timestamp":generate_random_timestamp_iso(),
         "ptype": random.choice(["E","H"]),
         "account":{
             "oid": sender["oid"],

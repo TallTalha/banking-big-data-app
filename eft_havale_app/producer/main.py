@@ -41,7 +41,7 @@ def main():
             if (i+1)%500 == 0:
                 LOG.info(f"{i+1} adet veri gönderildi.")
             
-            sleep(0.5) # 50ms bekle
+            sleep(0.05) # 5ms bekle
     except Exception as e:
         LOG.error(f"Kafka Topiğine veri gönderirken hata:{e}", exc_info=True)
 
