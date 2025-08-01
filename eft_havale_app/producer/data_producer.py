@@ -5,7 +5,6 @@ JSON tipteki Transaction objelerini ilgili kafka topiine produce eden ve ana iş
 import json
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
-from configs.settings import KAFKA_BOOTSTRAPSERVERS
 import logging
 
 
