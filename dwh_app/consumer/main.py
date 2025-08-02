@@ -7,8 +7,8 @@ Bu script;
 """
 import os
 import sys
-from consumer.data_consumer import create_spark_session, read_from_postgres, write_to_mongo
-from consumer.data_transformer import transform_data
+from data_consumer import create_spark_session, read_from_postgres, write_to_mongo
+from data_transformer import transform_data
 
 from configs.settings import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_TABLE, MONGO_COLLECTION_DWH, MONGO_DB_DWH
 
