@@ -13,11 +13,15 @@ KAFKA_BOOTSTRAPSERVERS = str(os.getenv("KAFKA_BOOTSTRAPSERVERS"))
 KAFKA_TOPIC = str(os.getenv("KAFKA_TOPIC"))
 
 #MongoDB
-MONGO_URI = str(os.getenv("MONGO_URI")) 
+MONGO_URI = str(os.getenv("MONGO_URI"))
+MONGO_DB_DWH = str(os.getenv("MONGO_DB_DWH"))
+MONGO_COLLECTION_DWH = str(os.getenv("MONGO_COLLECTION_DWH"))
 
 # PostgreSQL
 POSTGRES_USER = str(os.getenv("POSTGRES_USER")) 
 POSTGRES_PASSWORD = str(os.getenv("POSTGRES_PASSWORD")) 
+POSTGRES_DB = str(os.getenv("POSTGRES_DB")) 
+POSTGRES_TABLE = str(os.getenv("POSTGRES_TABLE")) 
 
 # Transaction Ayarları
 USER_COUNT = int(os.getenv("USER_COUNT")) #type: ignore
