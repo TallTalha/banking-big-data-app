@@ -5,17 +5,17 @@ Bu script;
     2.  Veri şemasını ayarlar.
     3.  Verileri MongoDB'ye yazar.
 """
+from dotenv import load_dotenv 
 import os
 import sys
-from data_consumer import create_spark_session, read_from_postgres, write_to_mongo
-from data_transformer import transform_data
-
-from configs.settings import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_TABLE, MONGO_COLLECTION_DWH, MONGO_DB_DWH
 
 current_dir = os.path.dirname(os.path.abspath(__file__)) # .../consumer
 app_root_dir = os.path.dirname(current_dir)             # .../dwh_app
 project_root = os.path.dirname(app_root_dir)            # .../banking-big-data-app
+load_dotenv(dotenv_path=os.path.join(project_root, ".env"))
 sys.path.append(project_root)
+
+from configs.settings import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_TABLE, MONGO_COLLECTION_DWH, MONGO_DB_DWH
 
 import logging
 from utils.logger import set_logger
@@ -23,6 +23,8 @@ from utils.logger import set_logger
 set_logger("consumer_main",app_file_path=app_root_dir)
 LOG = logging.getLogger(__name__)
 
+from data_consumer import create_spark_session, read_from_postgres, write_to_mongo
+from data_transformer import transform_data
 
 def main():
     """
