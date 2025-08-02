@@ -48,4 +48,7 @@ def main():
 
     write_to_mongo(df=transformed_df, db=MONGO_DB_DWH, collection=MONGO_COLLECTION_DWH)
 
+if __name__ == "__main__":
+    main()
+
     
