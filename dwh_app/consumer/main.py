@@ -5,17 +5,19 @@ Bu script;
     2.  Veri şemasını ayarlar.
     3.  Verileri MongoDB'ye yazar.
 """
-from dotenv import load_dotenv 
 import os
 import sys
+from dotenv import load_dotenv 
 
 current_dir = os.path.dirname(os.path.abspath(__file__)) # .../consumer
 app_root_dir = os.path.dirname(current_dir)             # .../dwh_app
 project_root = os.path.dirname(app_root_dir)            # .../banking-big-data-app
+
 load_dotenv(dotenv_path=os.path.join(project_root, ".env"))
+
 sys.path.append(project_root)
 
-from configs.settings import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_TABLE, MONGO_COLLECTION_DWH, MONGO_DB_DWH
+from configs.settings import POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_TABLE, MONGO_COLLECTION_DWH
 
 import logging
 from utils.logger import set_logger
@@ -48,7 +50,7 @@ def main():
     transformed_df = transform_data(df=df)
     transformed_df.cache()
 
-    write_to_mongo(df=transformed_df, db=MONGO_DB_DWH, collection=MONGO_COLLECTION_DWH)
+    write_to_mongo(df=transformed_df, collection=MONGO_COLLECTION_DWH)
 
 if __name__ == "__main__":
     main()

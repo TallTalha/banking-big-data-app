@@ -23,6 +23,7 @@ def create_spark_session(appName: str) -> SparkSession | None :
             SparkSession.builder
             .appName(appName)
             .master("local[*]")
+            .config("spark.mongodb.write.connection.uri", "mongodb://localhost:27017/dwh_db")
             .getOrCreate()
         )
         spark.sparkContext.setLogLevel("WARN")
@@ -67,14 +68,13 @@ def read_from_postgres(spark: SparkSession, p_db: str, p_table: str, p_user: str
         LOG.critical("PostgreSQL'den veriler okunurken hata: {e}", exc_info=True)
         return None
     
-def write_to_mongo(df: DataFrame, db: str, collection: str) -> None:
+def write_to_mongo(df: DataFrame, collection: str) -> None:
     """
     Açıklama:
         Bir Spark Batch DataFrame'ini belirtilen MongoDB koleksiyonuna yazar.
         Varolan verinin üzerine yazar (overwrite)
     Args:
         df(DataFrame): Mongo'ya yazılacak veri yapısı.
-        db(str): Verinin yazılacağı koleksiyonun bulunduğu veritabanı ismi.
         collection(str): Verinin yazılacağı koleksiyon ismi.
     Returns:
         None
@@ -84,7 +84,6 @@ def write_to_mongo(df: DataFrame, db: str, collection: str) -> None:
         (
             df.write.format("mongodb") 
             .mode("overwrite") 
-            .option("uri", f"mongodb://localhost:27017/{db}") 
             .option("collection", collection) 
             .save()
         )
