@@ -84,7 +84,7 @@ def generate_random_timestamp_iso() -> str:
 def current_timestamp_iso():
     return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 
-def generate_transactions(user_pool: list) -> dict:
+def generate_transactions(user_pool: list, timestamp_str: str) -> dict:
     """
     Açıklama:
         Kullanıcı listesini kullanarak, ortam değiskeninde belirtilen adet kadar sahte transaction verisi üretir ve dict olarak döndürür.  
@@ -110,7 +110,7 @@ def generate_transactions(user_pool: list) -> dict:
 
     transaction = {
         "pid": str(uuid.uuid4()),
-        "timestamp":current_timestamp_iso(),
+        "timestamp":timestamp_str,
         "ptype": random.choice(["E","H"]),
         "account":{
             "oid": sender["oid"],

@@ -1,4 +1,4 @@
-from eft_havale_app.producer.data_generator import generate_transactions, create_user_pool
+from eft_havale_app.producer.data_generator import generate_transactions, create_user_pool, generate_random_timestamp_iso, current_timestamp_iso
 from eft_havale_app.producer.data_producer import create_kafka_producer
 
 import sys
@@ -35,7 +35,7 @@ def main():
     
     try:
         for i in range(TRANSACTION_COUNT):
-            transaction = generate_transactions(user_pool)
+            transaction = generate_transactions(user_pool, timestamp_str= generate_random_timestamp_iso())
             producer.send(KAFKA_TOPIC, value=transaction)
 
             if (i+1)%500 == 0:
