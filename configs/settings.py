@@ -15,6 +15,10 @@ KAFKA_TOPIC = str(os.getenv("KAFKA_TOPIC"))
 #MongoDB
 MONGO_URI = str(os.getenv("MONGO_URI")) 
 
+# PostgreSQL
+POSTGRES_USER = str(os.getenv("POSTGRES_USER")) 
+POSTGRES_PASSWORD = str(os.getenv("POSTGRES_PASSWORD")) 
+
 # Transaction Ayarları
 USER_COUNT = int(os.getenv("USER_COUNT")) #type: ignore
 TRANSACTION_COUNT = int(os.getenv("TRANSACTION_COUNT")) #type: ignore
