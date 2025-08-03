@@ -1,6 +1,7 @@
 # eft_havale_app/data_producer.py
 """
-JSON tipteki Transaction objelerini ilgili kafka topiine produce eden ve ana iş akışını yöneten script. 
+Bu modül, kafka aracına veri produce etmek için Kafka Producer nesnesini oluşturur
+ve yapılandırma sorumluluğunu üstlenir.
 """
 import json
 from kafka import KafkaProducer
