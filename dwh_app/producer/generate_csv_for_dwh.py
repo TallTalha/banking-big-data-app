@@ -20,7 +20,7 @@ from utils.logger import set_logger
 set_logger("generate_csv_for_dwh",app_file_path=app_root_dir)
 LOG = logging.getLogger(__name__)
 
-OUTPUT_CSV_FILE = "eft_havale_transactions.csv"
+OUTPUT_CSV_FILE = "dwh_postgre_transactions.csv"
 NUM_RECORDS = 30000
 USER_POOL_SIZE = 1000
 
