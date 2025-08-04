@@ -42,7 +42,7 @@ def main():
         sys.exit(1) # ÇIKIŞ -> Kafka Producer nesnesi oluşmadı.
 
     user_pool = create_user_pool(ODEME_KANALI_USER_COUNT)
-
+    sent_count = 0  # gönderilen kayıt sayısı
     try:
         
         LOG.info(f"{ODEME_KANALI_KAFKA_TOPIC} topiğine {ODEME_KANALI_TRANSACTION_COUNT} adet transaction gönderilecek.")
@@ -51,7 +51,7 @@ def main():
             
             transaction = generate_payment_transaction(user_pool=user_pool)
             producer.send(topic=ODEME_KANALI_KAFKA_TOPIC, value=transaction)
-
+            sent_count+=1
             if ((i+1)%1000==0):
                 LOG.info(f"{(i+1)} adet transaction {ODEME_KANALI_KAFKA_TOPIC} topiğine gönderildi.")
 
@@ -60,7 +60,9 @@ def main():
     except Exception as e:
         LOG.error(f"Veri üretim ve gönderim döngüsünde beklenmedik hata:{e}", exc_info=True)
     finally:
+        oran = (sent_count/ODEME_KANALI_TRANSACTION_COUNT)*100
         LOG.info(f"{ODEME_KANALI_KAFKA_TOPIC} topiğine veri gönderimi döngüsü tamamlandı. Kafka producer kapatılıyor...")
+        LOG.info(f"{sent_count}/{ODEME_KANALI_TRANSACTION_COUNT} --- %{oran} tamamlandı. ")
         if producer:
             producer.flush() # Tamponda bekleyen tüm mesajların gönderildiğinden emin ol.
             producer.close() # Bağlantıyı temiz bir şekilde kapat.
