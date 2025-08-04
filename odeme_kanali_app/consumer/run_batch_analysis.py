@@ -20,8 +20,8 @@ sys.path.append(project_dir)
 
 from utils.logger import set_logger
 from configs.settings import KAFKA_BOOTSTRAPSERVERS, ODEME_KANALI_KAFKA_TOPIC
-from .data_consumer import create_spark_session, read_from_kafka
-from .data_transformer import transfrom_transaction
+from odeme_kanali_app.consumer.data_consumer import create_spark_session, read_from_kafka
+from odeme_kanali_app.consumer.data_transformer import transfrom_transaction
 import pyspark.sql.functions as F
 
 set_logger(name="run_batch_analysis", app_file_path=app_dir)
