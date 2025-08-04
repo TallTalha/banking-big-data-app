@@ -25,6 +25,7 @@ def create_spark_session(appName: str) -> SparkSession | None:
             SparkSession.builder
             .appName(appName)
             .master("local[*]")
+            .config("spark.mongodb.write.connection.uri", "mongodb://localhost:27017/odeme_kanali_db")
             .getOrCreate()
         )
         spark.sparkContext.setLogLevel("WARN")
@@ -61,3 +62,27 @@ def read_from_kafka(spark: SparkSession, kafka_server: str, kafka_topic: str, st
     except Exception as e:
         LOG.critical(f"{kafka_topic} topiğinden veri okurken hata: {e}", exc_info=True)
         return None
+    
+def write_to_mongo(df: DataFrame, collection: str) -> None:
+    """
+    Açıklama:
+        Bir Spark Batch DataFrame'ini belirtilen MongoDB koleksiyonuna yazar.
+        Varolan verinin üzerine yazar (overwrite)
+    Args:
+        df(DataFrame): Mongo'ya yazılacak veri yapısı.
+        collection(str): Verinin yazılacağı koleksiyon ismi.
+    Returns:
+        None
+    """
+    LOG.info(f"{collection} koleksiyonuna BATCH veri yazılıyor...")
+    try:
+        (
+            df.write.format("mongodb") 
+            .mode("overwrite") 
+            .option("collection", collection) 
+            .save()
+        )
+            
+        LOG.info("Veri MongoDB'ye başarıyla yazıldı.")
+    except Exception as e:
+        LOG.critical(f"{collection} koleksiyonuna BATCH veri yazılırken hata: {e}", exc_info=True)
