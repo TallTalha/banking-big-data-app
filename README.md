@@ -22,9 +22,9 @@ Bu repo, tek bir uygulamadan çok, her biri kendi özel problemini çözen, anca
   * **Veri Depolama:**
       * MongoDB (NoSQL - Analiz sonuçları ve esnek veriler için)
       * PostgreSQL (RDB - Geleneksel veri kaynaklarını simüle etmek için)
-  * **Veri Üretimi ve Entegrasyon:** Python, FastAPI, Tweepy, Faker
-  * **Altyapı ve Yönetim:** DigitalOcean Droplet (Ubuntu), `systemd` (Servis yönetimi)
-  * **Gözlemlenebilirlik:** Python `logging` modülü, Kibana
+  * **Veri Üretimi ve Entegrasyon:** Python, Faker
+  * **Altyapı ve Yönetim:** DigitalOcean Droplet (Ubuntu - Single Node), `systemd` (Servis yönetimi)
+  * **Gözlemlenebilirlik:** Python `logging` modülü
 
 ## 3\. Proje Dosya Yapısı
 

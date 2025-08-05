@@ -4,7 +4,7 @@ set -e
 # YENİ EKLENEN SATIR: Spark ortam değişkenlerini manuel olarak yükle
 source /etc/profile.d/spark.sh
 
-echo "DWH ETL İşi Başlatılıyor..."
+echo "ODEME KANALI BATCH İşi Başlatılıyor..."
 
 # Projenin kök dizinine git (script'in konumuna göre)
 cd "$(dirname "$0")/.."
@@ -18,4 +18,4 @@ spark-submit \
   --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 \
   odeme_kanali_app/consumer/run_batch_analysis.py
 
-echo "DWH ETL İşi Tamamlandı."
+echo "ODEME KANALI BATCH İşi Tamamlandı."
