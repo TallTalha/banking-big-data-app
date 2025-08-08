@@ -65,20 +65,26 @@ banking-big-data-app/
 ### 4.1. `eft_havale_app` - Gerçek Zamanlı İşlem Simülasyonu ve Analizi
 
   * **Amaç:** Bankalar arası EFT/Havale işlemlerini gerçekçi bir şekilde simüle eden ve bu veriyi Kafka üzerinden Spark ile hem toplu (batch) hem de anlık (streaming) olarak analiz eden bir boru hattı.
-  * **Mimari:** `Python Producer -> Kafka -> Spark (Batch & Streaming) -> MongoDB`
+  * **Mimari:** `Python Producer -> Kafka -> Spark (Batch & Streaming) -> MongoDB` ![EFT Havale Uygulama mimarisinin akış diyagramı. `Python Producer -> Kafka -> Spark (Batch & Streaming) -> MongoDB` ](eft_havale_app/images/flow.svg)
   * **Öne Çıkan Özellikler:** `Faker` ile tutarlı kullanıcı havuzları oluşturma, `pivot` ve `window` gibi gelişmiş Spark analiz fonksiyonlarının kullanımı.
+  * **Produce Edilen Veri Yapısı:** ![EFT Havale Uygulamasında produce edilen veri yapısı](eft_havale_app/producer/images/produced_data_example.png)
+  * **Çıktılar / Analiz Sonuçları:** Analiz çıktıları `banking-big-data-app/eft_havale_app/consumer/images` dizini altında bulunuyor. ![EFT Havale Uygulamasında Banka bazlı batch analiz ](eft_havale_app/consumer/images/batch_analysis_mongo_output_1.png) ![EFT Havale Uygulamasında anlık analiz ](eft_havale_app/consumer/images/real_time_analysis_output.png)
+
 
 ### 4.2. `dwh_app` - RDB'den NoSQL'e ETL Projesi
 
   * **Amaç:** Geleneksel bir ilişkisel veritabanında (PostgreSQL) bulunan yapısal veriyi, Spark kullanarak okumak, dönüştürmek ve modern bir NoSQL veritabanına (MongoDB) yüklemek. Klasik bir Veri Ambarı (DWH) modernizasyon senaryosunu temsil eder.
-  * **Mimari:** `PostgreSQL (RDB) -> Spark Batch -> MongoDB (NoSQL)`
+  * **Mimari:** `PostgreSQL (RDB) -> Spark Batch -> MongoDB (NoSQL)` ![DWH Uygulama mimarisinin akış diyagramı. `Python Producer -> `PostgreSQL (RDB) -> Spark Batch -> MongoDB (NoSQL)` ](dwh_app/images/flow.svg)
   * **Öne Çıkan Özellikler:** Spark'ın JDBC veri kaynağını kullanarak ilişkisel veritabanlarına bağlanması ve `DataFrameWriter` API'si ile NoSQL hedeflerine veri yazması.
+  * **RDB ve NoSQL Kayıtları:** ![DWH Uygulaması RDB Kayıtları](dwh_app/consumer/images/postgresql_transactions_table.png) ![DWH Uygulaması NoSQL Kayıtları ](dwh_app/consumer/images/mongodb_transactions_collection.png)
 
 ### 4.3. `odeme_kanali_app` - Müşteri Segmentasyon Analizi
 
   * **Amaç:** Kredi kartı kullanım loglarını analiz ederek, bankanın modern ödeme kanallarını (QRCode, Sanal Kart) kullanmayan ancak potansiyeli yüksek olan müşteri segmentlerini tespit etmek.
-  * **Mimari:** `Python Producer -> Kafka -> Spark Batch -> MongoDB`
+  * **Mimari:** `Python Producer -> Kafka -> Spark Batch -> MongoDB` ![Ödeme Kanali Uygulama mimarisinin akış diyagramı. `Python Producer -> Kafka -> Spark Batch -> MongoDB` ](odeme_kanali_app/images/flow.svg)
   * **Öne Çıkan Özellikler:** İş probleminden yola çıkarak, `filter` ve `groupBy` gibi temel Spark operasyonları ile hedefe yönelik pazarlama listeleri oluşturma.
+  * **Kafka Console Consumer Örneği:** ![Kafka Console Consumer Örneği](odeme_kanali_app/images/producer_outputs.gif)
+  * **Spark Analiz Sonuçları:** ![Spark Analiz Sonuçarı](odeme_kanali_app/images/spark_analysis_outputs.png)
 
 ## 5\. Kurulum ve Çalıştırma
 
